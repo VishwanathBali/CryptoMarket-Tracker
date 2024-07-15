@@ -25,7 +25,7 @@ export default function Home() {
     const intervalId = setInterval(() => {
       fetchAndStoreData();
       fetchData();
-    }, 5000);
+    }, 2000);
 
     return () => clearInterval(intervalId);
   }, []);

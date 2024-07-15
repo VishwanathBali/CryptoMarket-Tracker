@@ -35,7 +35,7 @@ const CryptoPage = () => {
     const intervalId = setInterval(() => {
       fetchAndStoreData();
       fetchData();
-    }, 5000);
+    }, 2000);
 
     return () => clearInterval(intervalId);
   }, [crypto, dispatch]);
