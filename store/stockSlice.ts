@@ -23,7 +23,7 @@ const stockSlice = createSlice({
       state.name = action.payload;
     },
     setStockPrices: (state, action: PayloadAction<StockPrice[]>) => {
-      state.prices = action.payload; // Directly assign the payload
+      state.prices = action.payload;
     },
   },
 });

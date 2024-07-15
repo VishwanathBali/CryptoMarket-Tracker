@@ -2,12 +2,13 @@
 
 import React, { useEffect } from 'react';
 import Table from '@/components/Table';
-import { useParams, usePathname, useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { fetchStockData, fetchAndStoreData } from "@/utils/dataUtils";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setStockPrices, setStockName } from '@/store/stockSlice';
+import { RootState } from '@/store';
+import { updateCurrentIndex } from '@/store/navigationSlice';
 
-const cryptoOrder = ['/', '/DOGE', '/ETH', '/SOL', '/BNB'];
 
 const cryptoNames: Record<string, string> = {
   BTC: "Bitcoin",
@@ -19,9 +20,10 @@ const cryptoNames: Record<string, string> = {
 
 const CryptoPage = () => {
   const { crypto } = useParams<{ crypto: string }>();
-  const pathname = usePathname();
   const router = useRouter();
   const dispatch = useDispatch();
+  const cryptoOrder = useSelector((state: RootState) => state.navigation.cryptoOrder);
+  const currentIndex = useSelector((state: RootState) => state.navigation.currentIndex);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,6 +33,7 @@ const CryptoPage = () => {
 
     fetchData();
     dispatch(setStockName(crypto));
+    dispatch(updateCurrentIndex(`/${crypto}`));
 
     const intervalId = setInterval(() => {
       fetchAndStoreData();
@@ -40,7 +43,6 @@ const CryptoPage = () => {
     return () => clearInterval(intervalId);
   }, [crypto, dispatch]);
 
-  const currentIndex = cryptoOrder.indexOf(pathname);
   const prevPage = currentIndex > 0 ? cryptoOrder[currentIndex - 1] : null;
   const nextPage = currentIndex < cryptoOrder.length - 1 ? cryptoOrder[currentIndex + 1] : null;
 

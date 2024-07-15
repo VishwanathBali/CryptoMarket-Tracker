@@ -27,3 +27,6 @@ npm i
 
 npm run dev
 ```
+
+### Note:
+* If the application doesn't display Full table when launched for the first time, please refresh the page and wait for 4-5 seconds.It will work!!

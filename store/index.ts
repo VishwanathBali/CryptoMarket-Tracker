@@ -1,9 +1,11 @@
 import {configureStore} from '@reduxjs/toolkit'
 import stockSlice from './stockSlice'
+import navigationSlice from './navigationSlice'
 
 const store = configureStore({
     reducer:{
-        stock: stockSlice.reducer
+        stock: stockSlice.reducer,
+        navigation: navigationSlice.reducer
     }
 })
 

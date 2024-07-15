@@ -1,7 +1,6 @@
 import { connectToDB } from "@/utils/database";
 import StockPrice from "@/models/stock";
 
-
 export const POST = async (req: Request) => {
     const { name, price } = await req.json();
 
