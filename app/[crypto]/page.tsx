@@ -5,7 +5,7 @@ import Table from '@/components/Table';
 import { useParams, useRouter } from 'next/navigation';
 import { fetchStockData, fetchAndStoreData } from "@/utils/dataUtils";
 import { useDispatch, useSelector } from 'react-redux';
-import { setStockPrices, setStockName } from '@/store/stockSlice';
+import { setStockPrices, updateStockPrice } from '@/store/stockSlice';
 import { RootState } from '@/store';
 import { updateCurrentIndex } from '@/store/navigationSlice';
 
@@ -24,21 +24,37 @@ const CryptoPage = () => {
   const dispatch = useDispatch();
   const cryptoOrder = useSelector((state: RootState) => state.navigation.cryptoOrder);
   const currentIndex = useSelector((state: RootState) => state.navigation.currentIndex);
+  const stockPrices = useSelector((state: RootState) => {
+    const stock = state.stock.find(stock => stock.name === crypto);
+    return stock ? stock.prices : [];
+  });
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await fetchStockData(crypto);
-      dispatch(setStockPrices(data));
+      try {
+        const { name, prices } = await fetchStockData(crypto);
+
+        const latestPrice = prices[prices.length - 1];
+        console.log("Length : ",stockPrices.length);
+        
+
+        if (stockPrices.length === 0) {
+          dispatch(setStockPrices({ name, prices }));
+        } else if (latestPrice) {
+          dispatch(updateStockPrice({ name, price: latestPrice }));
+        }
+      } catch (error) {
+        console.error('Error fetching stock data:', error);
+      }
     };
 
     fetchData();
-    dispatch(setStockName(crypto));
     dispatch(updateCurrentIndex(`/${crypto}`));
 
     const intervalId = setInterval(() => {
       fetchAndStoreData();
       fetchData();
-    }, 2000);
+    }, 3000);
 
     return () => clearInterval(intervalId);
   }, [crypto, dispatch]);
@@ -73,7 +89,7 @@ const CryptoPage = () => {
           <div className="w-20" />
         )}
       </div>
-      <Table />
+      <Table cryptoName={crypto}/>
     </section>
   );
 };

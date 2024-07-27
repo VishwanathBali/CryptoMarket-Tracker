@@ -3,9 +3,15 @@
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store';
 
-const Table = () => {
-  const stockData = useSelector((state: RootState) => state.stock.prices);
-  
+interface TableProps {
+  cryptoName: string;
+}
+
+const Table: React.FC<TableProps> = ({ cryptoName }) => {
+  const stockData = useSelector((state: RootState) =>
+    state.stock.find(stock => stock.name === cryptoName)?.prices || []
+  );
+
   return (
     <div className="w-full flex justify-center my-5">
       <table className="w-4/5 border-collapse shadow-md">
